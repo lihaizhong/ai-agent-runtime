@@ -1,12 +1,23 @@
-# AI Agent Skills
+# AI Agent Runtime
 
-为 iFlow CLI 设计的 AI 代理技能集合，用于定义、管理和扩展 AI 代理的能力。
+围绕大模型或已有 coding agent 的运行时环境，提供从项目搭建到项目管理的全流程支持。
 
 ## 项目简介
 
-本项目是一个技能配置和文档项目，专注于定义和组织 AI 代理的技能配置和工作流程。每个技能都通过 Markdown 格式的 `SKILL.md` 文件进行定义，包含技能的元数据、功能描述、使用方法和最佳实践。
+本项目旨在打造一套完整的 AI 工程运行时环境，支持大模型和各种 coding agent 的有效协作。通过提供工程搭建（Scaffolding）和工程运行治理（Harness）两大核心能力，确保 AI 驱动的项目能够高效、稳定地开发和运行。
+
+**核心愿景**：为 AI 工程化提供标准化的运行时环境，降低 AI 开发门槛，提升开发效率和质量。
 
 **开源协议**：Apache License 2.0
+
+## 核心架构
+
+AI Agent Runtime 由以下核心模块组成：
+
+- **Scaffolding**：工程搭建的准备工作，负责项目初始化、环境配置、依赖管理等。内部包含专属的 commands、agents、skills 等组件
+- **Harness**：工程运行时的治理工作，负责工具分发、上下文管理、安全执行等。内部包含专属的 commands、agents、skills 等组件
+
+每个核心模块都是独立的运行时环境，拥有自己的工具集、智能体和技能系统，协同工作以提供完整的 AI 工程化支持。
 
 ## 核心技能
 
@@ -41,87 +52,70 @@
 - 应用历史经验优化响应
 - 通过反馈不断改进经验质量
 
-## 快速开始
-
-### 环境准备
-
-**必需工具**：
-- Python 3.9+
-- Obsidian 桌面应用（1.12+）
-
-**可选工具**：
-- uv（Python 包管理器）
-- storks-obsidian-mcp（Obsidian MCP 服务器）
-
-### 安装配置
-
-1. 克隆项目：
-```bash
-git clone git@github.com:lihaizhong/ai-agent-skills.git
-cd ai-agent-skills
-```
-
-2. 配置 Obsidian Vault（用于 openexp 技能）：
-```bash
-mkdir -p ~/Exp\ Vault
-```
-
-3. （可选）配置 Obsidian MCP 服务器：
-在 MCP 客户端配置文件中添加 storks-obsidian-mcp 配置
-
-### 使用示例
-
-#### 提示词工程学习
-
-```
-用户：我想学习提示词工程的基础知识
-AI：提供结构化的教程内容，包含定义、重要性、核心原则和实际示例
-```
-
-#### 全栈开发工作流
-
-```
-用户：帮我设计一个电商系统的 API
-AI：
-1. 执行 /opsx:propose 创建变更提案
-2. 协调 api-designer 设计 API 结构
-3. 使用 frontend-developer 和 backend-developer 实现前后端
-4. 通过 frontend-tester 验证功能
-5. 执行 /opsx:archive 归档变更
-```
-
-#### 经验管理
-
-```
-用户：/openexp 我喜欢用 pnpm 而不是 npm
-AI：自动创建用户偏好记录
-
-用户：/openexp 遇到了 CORS 问题，有什么经验吗？
-AI：搜索相关经验并提供建议
-```
-
 ## 目录结构
 
 ```
-ai-agent-skills/
+ai-agent-runtime/
 ├── AGENTS.md              # 项目上下文文件（开发参考）
 ├── README.md              # 项目说明（本文件）
 ├── LICENSE                # Apache 2.0 开源协议
-├── commands               # 自定义命令定义
+├── commands/              # 临时/共享命令定义（待整理）
 │   └── /openexp          # 经验管理命令
-└── skills/                # 技能定义目录
-    ├── SKILL.md          # 提示词工程学习助手
+├── scaffolding/           # 工程搭建的准备工作（核心模块）
+│   ├── README.md          # Scaffolding 说明文档
+│   ├── commands/          # Scaffolding 专属命令
+│   ├── agents/            # Scaffolding 专属智能体
+│   ├── skills/            # Scaffolding 专属技能
+│   └── templates/         # 项目模板
+├── harness/               # 工程运行时的治理工作（核心模块）
+│   ├── README.md          # Harness 说明文档
+│   ├── commands/          # Harness 专属命令
+│   ├── agents/            # Harness 专属智能体
+│   ├── skills/            # Harness 专属技能
+│   └── middleware/        # 中间件和工具
+└── skills/                # 临时/共享技能定义（待整理）
     ├── evals/            # 技能评估测试
-    │   └── evals.json
     ├── fullstack/        # 全栈开发工作流
-    │   ├── SKILL.md
-    │   └── reference/    # 参考文档
     └── openexp/          # 经验管理技能
-        ├── SKILL.md
-        ├── Conventions/  # 约定规范
-        ├── reference/    # 参考文档
-        ├── scripts/      # 维护脚本
-        └── templates/    # Obsidian 模板
+```
+
+**注意**：`skills/` 和 `commands/` 目录当前存放临时或共享的内容，未来可能被整理并迁移到 `scaffolding/` 和 `harness/` 各自的模块中。
+
+## 工程生命周期管理
+
+Scaffolding 和 Harness 共同构成了完整的 AI 工程生命周期管理体系：
+
+### Scaffolding（工程搭建准备）
+- **职责**：项目启动前的准备工作
+- **内容**：项目初始化、模板管理、环境检查、配置生成、依赖安装
+- **时机**：一次性初始化，项目启动时执行
+- **输出**：完整的项目结构、配置文件、开发环境
+
+### Harness（工程运行治理）
+- **职责**：模型工作时的支持和治理
+- **内容**：工具分发、上下文压缩、跨伦状态管理、安全规则执行、经验记忆写入、长会话稳定性保障
+- **时机**：持续运行，项目开发过程中执行
+- **输出**：稳定的运行环境、智能的工具调度、完整的经验积累
+
+### 工作流程
+
+```
+项目启动
+    ↓
+[Scaffolding] 工程搭建准备
+    - 初始化项目结构
+    - 配置开发环境
+    - 安装依赖工具
+    ↓
+项目开发
+    ↓
+[Harness] 工程运行治理
+    - 分发和管理工具
+    - 优化上下文
+    - 执行安全规则
+    - 记录经验
+    ↓
+项目交付
 ```
 
 ## 贡献指南
@@ -159,26 +153,6 @@ metadata:
 - 保持文档清晰简洁
 - 遵循语义化版本管理
 - 在文档底部记录版本历史
-
-## 维护脚本
-
-### maintain-experience-vault.py
-
-**位置**：`skills/openexp/scripts/`
-
-**功能**：维护经验库，自动计算影响力和更新索引地图
-
-**运行频率**：建议每周运行一次
-
-```bash
-python3 skills/openexp/scripts/maintain-experience-vault.py
-```
-
-### obsidian-cli.sh
-
-**位置**：`skills/openexp/scripts/`
-
-**功能**：Obsidian CLI 封装脚本，提供便捷的 vault 操作接口
 
 ## 常见问题
 
@@ -225,7 +199,7 @@ python3 skills/openexp/scripts/maintain-experience-vault.py
 - **兼容性**：iFlow CLI
 - **开源协议**：Apache License 2.0
 - **主要维护者**：niuma
-- **Git 仓库**：git@github.com:lihaizhong/ai-agent-skills.git
+- **Git 仓库**：git@github.com:lihaizhong/ai-agent-runtime.git
 
 ## 许可证
 
