@@ -21,17 +21,9 @@ AI Agent Runtime 由以下核心模块组成：
 
 ## 核心技能
 
-### prompt-learning（提示词工程学习助手）
-帮助用户学习和实践提示词工程和上下文工程，提供结构化的教程、练习题和提示词质量评估。
+### fullstack（全栈开发工作流）v3.0
 
-**使用场景**：
-- 想要系统学习提示词工程的基础概念
-- 需要分析和改进现有的提示词
-- 希望通过练习题提升提示词编写能力
-- 评估提示词质量并获取优化建议
-
-### fullstack（全栈开发工作流）
-协调多个专业 subagent 协作完成复杂全栈开发任务，包括 API 设计、架构设计和多组件集成。
+协调多个专业 subagent 协作完成复杂全栈开发任务，遵循 TDD 实践。
 
 **使用场景**：
 - 设计包含多个端点的 API（如认证系统、电商系统）
@@ -39,11 +31,13 @@ AI Agent Runtime 由以下核心模块组成：
 - 需要微服务架构、数据可视化 dashboard 等多模块系统
 
 **核心原则**：
-- Spec-Driven：所有代码变更必须先有规格定义
-- Workspace Isolation：每个变更在独立上下文中执行
-- No Over-Engineering：只实现明确要求的功能
+- **TDD 循环**：Red（测试先行）→ Green（最小实现）→ Refactor（优化）
+- **Spec-Driven**：所有代码变更必须先有规格定义
+- **Workspace Isolation**：每个变更在独立上下文中执行
+- **No Over-Engineering**：只实现明确要求的功能
 
-### openexp（经验管理技能）
+### openexp（经验管理技能）v2.8
+
 从对话中学习、积累经验，并在未来交互中应用这些经验以提供更智能的响应。使用 Obsidian Markdown 格式存储。
 
 **使用场景**：
@@ -52,34 +46,44 @@ AI Agent Runtime 由以下核心模块组成：
 - 应用历史经验优化响应
 - 通过反馈不断改进经验质量
 
+### prompt-learning（提示词工程学习助手）v2.6
+
+帮助用户学习和实践提示词工程和上下文工程，提供结构化的教程、动态生成的练习题和提示词质量评估。
+
+**使用场景**：
+- 想要系统学习提示词工程的基础概念
+- 需要分析和改进现有的提示词
+- 希望通过练习题提升提示词编写能力
+- 评估提示词质量并获取优化建议
+
 ## 目录结构
 
 ```
 ai-agent-runtime/
-├── AGENTS.md              # 项目上下文文件（开发参考）
 ├── README.md              # 项目说明（本文件）
+├── CLAUDE.md              # Claude Code 指导文件
 ├── LICENSE                # Apache 2.0 开源协议
-├── commands/              # 临时/共享命令定义（待整理）
-│   └── /openexp          # 经验管理命令
-├── scaffolding/           # 工程搭建的准备工作（核心模块）
-│   ├── README.md          # Scaffolding 说明文档
-│   ├── commands/          # Scaffolding 专属命令
-│   ├── agents/            # Scaffolding 专属智能体
-│   ├── skills/            # Scaffolding 专属技能
-│   └── templates/         # 项目模板
-├── harness/               # 工程运行时的治理工作（核心模块）
-│   ├── README.md          # Harness 说明文档
-│   ├── commands/          # Harness 专属命令
-│   ├── agents/            # Harness 专属智能体
-│   ├── skills/            # Harness 专属技能
-│   └── middleware/        # 中间件和工具
-└── skills/                # 临时/共享技能定义（待整理）
-    ├── evals/            # 技能评估测试
-    ├── fullstack/        # 全栈开发工作流
-    └── openexp/          # 经验管理技能
+├── commands/              # 命令定义
+│   └── openexp.md         # 经验管理命令
+├── agents/                # 智能体定义
+│   ├── api-designer.md    # API 设计
+│   ├── backend-developer.md
+│   ├── frontend-developer.md
+│   ├── fullstack-developer.md
+│   ├── spec-writer.md     # 规格编写（TDD Red 阶段）
+│   ├── tester.md          # 测试实现（TDD Red 阶段）
+│   ├── ui-designer.md
+│   ├── code-explainer.md
+│   └── librarian.md       # 文档管理
+├── skills/                # 技能定义
+│   ├── fullstack/         # TDD 驱动的全栈开发工作流
+│   ├── openexp/           # 经验管理技能（Obsidian 存储）
+│   └── prompt-learning/   # 提示词工程学习
+├── scaffolding/           # 工程搭建模块（规划中）
+└── harness/               # 工程运行治理模块（规划中）
 ```
 
-**注意**：`skills/` 和 `commands/` 目录当前存放临时或共享的内容，未来可能被整理并迁移到 `scaffolding/` 和 `harness/` 各自的模块中。
+**注意**：`scaffolding/` 和 `harness/` 目录目前处于规划阶段，核心功能在 `skills/` 和 `agents/` 中实现。
 
 ## 工程生命周期管理
 
@@ -169,7 +173,7 @@ metadata:
 **A**: 需要配置 Obsidian：
 - 安装 Obsidian 桌面应用（1.12+）
 - 创建 `~/Exp Vault` 目录
-- 可选：配置 storks-obsidian-mcp 服务器
+- 安装 Obsidian CLI（从 Obsidian 设置中安装）
 
 ### Q: fullstack 技能适合什么场景？
 
@@ -177,19 +181,27 @@ metadata:
 - API 设计（5+ 端点）
 - 复杂架构设计
 - 多组件集成
-- 不适合：简单代码审查、单个 bug 修复
+- 复杂 Bug 修复（> 50 行或多文件修改）
+
+**不适合**：简单代码审查、简单 Bug 修复（< 50 行）、小型功能开发（< 200 行）
+
+**TDD 工作流**：复杂任务需遵循 Red → Green → Refactor 循环，测试先行。
 
 ### Q: 如何维护经验库？
 
 **A**: 定期运行维护脚本：
 ```bash
-python3 skills/openexp/scripts/maintain-experience-vault.py
+# 动态查找脚本路径
+OPENEXP_SCRIPTS=$(find . -path "*/skills/openexp/scripts/obsidian-cli.sh" -type f 2>/dev/null | head -1 | xargs dirname 2>/dev/null)
+
+# 运行维护脚本
+python3 $OPENEXP_SCRIPTS/maintain-experience-vault.py
 ```
 建议每周运行一次，自动更新影响力和索引地图。
 
 ## 相关资源
 
-- [AGENTS.md](AGENTS.md) - 详细的项目上下文和开发参考
+- [CLAUDE.md](CLAUDE.md) - Claude Code 指导文件
 - [iFlow CLI 文档](https://iflow.cli/)
 - [Obsidian 文档](https://help.obsidian.md/)
 - [Prompt Engineering 指南](https://www.promptingguide.ai/)
